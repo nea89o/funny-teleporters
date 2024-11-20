@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "funny-teleporters",
+	"version": "${version}",
+	"name": "Funny Teleporters",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/funny-teleporters/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"moe.nea.funnyteleporters.FunnyTeleporters"
+		],
+		"client": [
+			"moe.nea.funnyteleporters.FunnyTeleportersClient"
+		]
+	},
+	"mixins": [
+		"funny-teleporters.mixins.json",
+		{
+			"config": "funny-teleporters.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.16.9",
+		"minecraft": "~1.21",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
