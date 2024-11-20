@@ -22,8 +22,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-import static moe.nea.funnyteleporters.FunnyRegistry.MODID;
-
 public class ColouredChestState extends PersistentState {
 
 	public Map<List<DyeColor>, DefaultedList<ItemStack>> inventories = new HashMap<>();
@@ -72,7 +70,7 @@ public class ColouredChestState extends PersistentState {
 
 	public static Type<ColouredChestState> TYPE = new Type<>(ColouredChestState::new, ColouredChestState::createFromNbt, null);
 
-	public static Identifier identifier = Identifier.of(MODID, "coloured_chests");
+	public static Identifier identifier = FunnyTeleporters.id("coloured_chests");
 
 	public static ColouredChestState getServerState(MinecraftServer server) {
 		var persistentStateWorld = Objects.requireNonNull(server.getWorld(World.OVERWORLD)).getPersistentStateManager(); // Force all data saving to be done in the overworld
