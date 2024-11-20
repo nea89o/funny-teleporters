@@ -8,6 +8,7 @@ public class FunnyDataGenerator implements DataGeneratorEntrypoint {
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
 		var pack = dataGenerator.createPack();
 		pack.addProvider(FunnyRecipeProvider::new);
+		pack.addProvider(FunnyDropTableProvider::new);
 	}
 
 }
