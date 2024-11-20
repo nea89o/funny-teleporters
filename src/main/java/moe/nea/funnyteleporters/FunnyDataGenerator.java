@@ -9,6 +9,7 @@ public class FunnyDataGenerator implements DataGeneratorEntrypoint {
 		var pack = dataGenerator.createPack();
 		pack.addProvider(FunnyRecipeProvider::new);
 		pack.addProvider(FunnyDropTableProvider::new);
+		pack.addProvider(FunnyTagGenerator::new);
 	}
 
 }
