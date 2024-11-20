@@ -2,15 +2,11 @@ package moe.nea.funnyteleporters;
 
 import com.mojang.serialization.MapCodec;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
-import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.AbstractChestBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.ChestBlock;
 import net.minecraft.block.DoubleBlockProperties;
-import net.minecraft.block.EnderChestBlock;
-import net.minecraft.block.FacingBlock;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.Waterloggable;
 import net.minecraft.block.entity.BlockEntity;
@@ -20,10 +16,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
@@ -32,6 +28,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
+
+import java.util.Objects;
 
 public class ColouredChestBlock extends AbstractChestBlock<ColouredChestBlockEntity> implements PolymerBlock, Waterloggable {
 	static Property<Direction> FACING = HorizontalFacingBlock.FACING;
@@ -62,9 +60,10 @@ public class ColouredChestBlock extends AbstractChestBlock<ColouredChestBlockEnt
 
 	@Override
 	protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-		// TODO: create a ui or something to configure frequency
-		player.sendMessage(Text.literal("Ender Chest geöffnet" + player));
-		return super.onUse(state, world, pos, player, hit);
+		if (player instanceof ServerPlayerEntity serverPlayer) {
+			((ColouredChestBlockEntity) Objects.requireNonNull(world.getBlockEntity(pos))).openScreen(serverPlayer);
+		}
+		return ActionResult.SUCCESS_NO_ITEM_USED;
 	}
 
 	@Override
