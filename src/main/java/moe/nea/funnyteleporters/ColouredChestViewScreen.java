@@ -11,7 +11,10 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Unit;
+
+import java.util.stream.Collectors;
 
 public class ColouredChestViewScreen extends SimpleGui {
 	private final ColouredChestBlockEntity blockEntity;
@@ -20,6 +23,8 @@ public class ColouredChestViewScreen extends SimpleGui {
 		super(ScreenHandlerType.GENERIC_9X4, player, false);
 		this.blockEntity = blockEntity;
 		setSlots();
+		setTitle(Text.literal("Funny Storage: " + blockEntity.extra.frequency().stream().map(DyeColor::getName)
+		                                                           .collect(Collectors.joining(", "))));
 	}
 
 	@Override
