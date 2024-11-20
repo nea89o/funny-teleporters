@@ -14,6 +14,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
@@ -21,8 +22,6 @@ import net.minecraft.util.math.BlockPos;
 import java.util.List;
 
 public class ColouredChestBlockEntity extends BlockEntity implements Inventory {
-	private DefaultedList<ItemStack> inventory = DefaultedList.ofSize(size(), ItemStack.EMPTY);
-
 	public record ExtraData(
 		List<DyeColor> frequency
 	) {
@@ -42,7 +41,6 @@ public class ColouredChestBlockEntity extends BlockEntity implements Inventory {
 	@Override
 	protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
 		super.writeNbt(nbt, registryLookup);
-		Inventories.writeNbt(nbt, inventory, registryLookup);
 		var result = ExtraData.CODEC.encodeStart(NbtOps.INSTANCE, extra);
 		if (result.hasResultOrPartial()) {
 			nbt.put("extra", result.getPartialOrThrow());
@@ -51,13 +49,18 @@ public class ColouredChestBlockEntity extends BlockEntity implements Inventory {
 
 	ExtraData extra = new ExtraData(List.of(DyeColor.BLUE, DyeColor.BLUE, DyeColor.BLUE));
 
+	public DefaultedList<ItemStack> getInventory() {
+		assert world instanceof ServerWorld;
+		return ColouredChestState.getServerState(world.getServer()).getDelegate(extra.frequency());
+	}
+
 	public int size() {
-		return 27;
+		return getInventory().size();
 	}
 
 	@Override
 	public boolean isEmpty() {
-		for (ItemStack itemStack : inventory) {
+		for (ItemStack itemStack : getInventory()) {
 			if (!itemStack.isEmpty()) return false;
 		}
 		return true;
@@ -66,13 +69,13 @@ public class ColouredChestBlockEntity extends BlockEntity implements Inventory {
 	@Override
 	public ItemStack getStack(int slot) {
 		if (0 <= slot && slot < size())
-			return inventory.get(slot);
+			return getInventory().get(slot);
 		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public ItemStack removeStack(int slot, int amount) {
-		ItemStack itemStack = Inventories.splitStack(this.inventory, slot, amount);
+		ItemStack itemStack = Inventories.splitStack(this.getInventory(), slot, amount);
 		if (!itemStack.isEmpty()) {
 			markDirty();
 		}
@@ -83,14 +86,14 @@ public class ColouredChestBlockEntity extends BlockEntity implements Inventory {
 	@Override
 	public ItemStack removeStack(int slot) {
 		markDirty();
-		return Inventories.removeStack(inventory, slot);
+		return Inventories.removeStack(getInventory(), slot);
 	}
 
 	@Override
 	public void setStack(int slot, ItemStack stack) {
 		if (0 <= slot && slot < size()) {
 			markDirty();
-			inventory.set(slot, stack);
+			getInventory().set(slot, stack);
 		}
 	}
 
@@ -102,8 +105,6 @@ public class ColouredChestBlockEntity extends BlockEntity implements Inventory {
 	@Override
 	protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
 		super.readNbt(nbt, registryLookup);
-		inventory = DefaultedList.ofSize(size(), ItemStack.EMPTY);
-		Inventories.readNbt(nbt, inventory, registryLookup);
 		if (nbt.contains("extra")) {
 			var extra = ExtraData.CODEC.decode(NbtOps.INSTANCE, nbt.get("extra"));
 			if (extra.hasResultOrPartial()) {
@@ -115,7 +116,7 @@ public class ColouredChestBlockEntity extends BlockEntity implements Inventory {
 	@Override
 	public void clear() {
 		markDirty();
-		inventory.clear();
+		getInventory().clear();
 	}
 
 	public void openScreen(ServerPlayerEntity player) {
