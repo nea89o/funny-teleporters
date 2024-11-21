@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "e": {
+      "item": "funny-teleporters:ender_pearl_block"
+    },
+    "o": {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "pattern": [
+    "ooo",
+    "oeo",
+    "ooo"
+  ],
+  "result": {
+    "count": 1,
+    "id": "funny-teleporters:teleporter"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "e": {
+      "item": "funny-teleporters:ender_pearl_block"
+    },
+    "r": {
+      "item": "minecraft:redstone_block"
+    },
+    "s": {
+      "item": "minecraft:stick"
+    }
+  },
+  "pattern": [
+    "  e",
+    " r ",
+    "s  "
+  ],
+  "result": {
+    "count": 1,
+    "id": "funny-teleporters:teleporter_wand"
+  }
+}

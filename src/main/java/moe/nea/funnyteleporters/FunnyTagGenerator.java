@@ -15,6 +15,10 @@ public class FunnyTagGenerator extends FabricTagProvider.BlockTagProvider {
 
 	@Override
 	protected void configure(RegistryWrapper.WrapperLookup wrapperLookup) {
-		getTagBuilder(BlockTags.PICKAXE_MINEABLE).add(Registries.BLOCK.getId(FunnyRegistry.COLOURED_CHEST));
+		getTagBuilder(BlockTags.PICKAXE_MINEABLE)
+			.add(Registries.BLOCK.getId(FunnyRegistry.COLOURED_CHEST))
+			.add(Registries.BLOCK.getId(FunnyRegistry.TELEPORTER));
+		getTagBuilder(BlockTags.HOE_MINEABLE)
+			.add(Registries.BLOCK.getId(FunnyRegistry.ENDER_PEARL_BLOCK));
 	}
 }
