@@ -9,7 +9,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 import java.util.Map;
 
@@ -20,6 +22,7 @@ public class TeleporterNexusScreen extends SimpleGui {
 		super(ScreenHandlerType.GENERIC_9X6, player, false);
 		this.blockEntity = blockEntity;
 		setSlots();
+		setTitle(Text.literal("Teleport Nexus"));
 	}
 
 	void setSlots() {
@@ -42,11 +45,16 @@ public class TeleporterNexusScreen extends SimpleGui {
 		return GuiElementBuilder.from(new ItemStack(entry.getValue()))
 		                        .setName(Text.literal("Teleport to"))
 		                        .hideDefaultTooltip()
-		                        .addLoreLine(Text.literal(String.format("x: %d, y: %d, z: %d", dest.blockPos().getX(), dest.blockPos().getY(), dest.blockPos().getZ())))
-		                        .addLoreLine(Text.literal("in " + dest.target().getValue()))
+		                        .addLoreLine(Text.literal(String.format("x: %d, y: %d, z: %d", dest.blockPos().getX(), dest.blockPos().getY(), dest.blockPos().getZ()))
+		                                         .setStyle(Style.EMPTY.withItalic(false).withColor(Formatting.AQUA)))
+		                        .addLoreLine(Text.literal("in " + dest.target().getValue())
+		                                         .setStyle(Style.EMPTY.withItalic(false).withColor(Formatting.AQUA)))
+		                        .addLoreLine(Text.empty())
+		                        .addLoreLine(Text.literal("Left-Click to teleport.").setStyle(Style.EMPTY.withItalic(false).withColor(Formatting.GRAY)))
+		                        .addLoreLine(Text.literal("Right-Click to edit item.").setStyle(Style.EMPTY.withItalic(false).withColor(Formatting.GRAY)))
 		                        .setCallback((clickType) -> {
 			                        if (clickType == ClickType.MOUSE_RIGHT) {
-										new TeleporterNexusEditorScreen(blockEntity, dest, player).open();
+				                        new TeleporterNexusEditorScreen(blockEntity, dest, player).open();
 				                        return;
 			                        }
 			                        dest.teleport(player);

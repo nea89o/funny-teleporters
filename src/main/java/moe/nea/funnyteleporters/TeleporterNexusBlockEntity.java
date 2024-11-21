@@ -14,8 +14,6 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.TreeMap;
 
 public class TeleporterNexusBlockEntity extends BlockEntity {
@@ -60,6 +58,11 @@ public class TeleporterNexusBlockEntity extends BlockEntity {
 
 	public void removeDestination(TeleporterDestination destination) {
 		destinations.remove(destination);
+		markDirty();
+	}
+
+	public void setIcon(TeleporterDestination dest, Item item) {
+		destinations.put(dest, Registries.ITEM.getEntry(item));
 		markDirty();
 	}
 }
