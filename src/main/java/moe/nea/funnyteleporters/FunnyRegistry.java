@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import eu.pb4.polymer.core.api.block.PolymerBlockUtils;
 import eu.pb4.polymer.core.api.block.SimplePolymerBlock;
 import eu.pb4.polymer.core.api.item.PolymerBlockItem;
+import eu.pb4.polymer.rsm.api.RegistrySyncUtils;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -25,8 +26,8 @@ public class FunnyRegistry {
 	                                                                                                                        .strength(10F), Blocks.GREEN_WOOL), Items.GREEN_WOOL);
 
 	public static TeleporterBlock TELEPORTER = registerBlock("teleporter", new TeleporterBlock(AbstractBlock.Settings.create()
-	                                                                                                       .pistonBehavior(PistonBehavior.BLOCK)
-	                                                                                                       .strength(50F, 1200F)), Items.SEA_LANTERN);
+	                                                                                                                 .pistonBehavior(PistonBehavior.BLOCK)
+	                                                                                                                 .strength(50F, 1200F)), Items.SEA_LANTERN);
 
 	public static ComponentType<TeleporterDestination> TELEPORTER_DESTINATION = registerComponentType("teleporter_destination", TeleporterDestination.CODEC);
 
@@ -36,7 +37,9 @@ public class FunnyRegistry {
 	public static TeleporterWand TELEPORTER_WAND = registerItem("teleporter_wand", new TeleporterWand(new Item.Settings().maxCount(1)));
 
 	private static <T> ComponentType<T> registerComponentType(String name, Codec<T> codec) {
-		return Registry.register(Registries.DATA_COMPONENT_TYPE, FunnyTeleporters.id(name), ComponentType.<T>builder().codec(codec).build());
+		var comp = Registry.register(Registries.DATA_COMPONENT_TYPE, FunnyTeleporters.id(name), ComponentType.<T>builder().codec(codec).build());
+		RegistrySyncUtils.setServerEntry(Registries.DATA_COMPONENT_TYPE, comp);
+		return comp;
 	}
 
 	private static <T extends BlockEntity> BlockEntityType<T> registerBlockEntity(String name, BlockEntityType.Builder<T> builder) {
