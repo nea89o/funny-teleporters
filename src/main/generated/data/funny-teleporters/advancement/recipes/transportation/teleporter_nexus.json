@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_teleporter": {
+      "conditions": {
+        "items": [
+          {
+            "items": "funny-teleporters:teleporter"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "funny-teleporters:teleporter_nexus"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_teleporter"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "funny-teleporters:teleporter_nexus"
+    ]
+  }
+}

@@ -16,5 +16,6 @@ public class FunnyDropTableProvider extends FabricBlockLootTableProvider {
 		addDrop(FunnyRegistry.COLOURED_CHEST);
 		addDrop(FunnyRegistry.ENDER_PEARL_BLOCK);
 		addDrop(FunnyRegistry.TELEPORTER);
+		addDrop(FunnyRegistry.TELEPORTER_NEXUS);
 	}
 }

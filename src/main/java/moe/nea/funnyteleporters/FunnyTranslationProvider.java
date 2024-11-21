@@ -15,6 +15,7 @@ public class FunnyTranslationProvider extends FabricLanguageProvider {
 	public void generateTranslations(RegistryWrapper.WrapperLookup wrapperLookup, TranslationBuilder translationBuilder) {
 		translationBuilder.add(FunnyRegistry.ENDER_PEARL_BLOCK, "Block of Ender Pearl");
 		translationBuilder.add(FunnyRegistry.TELEPORTER, "Teleporter");
+		translationBuilder.add(FunnyRegistry.TELEPORTER_NEXUS, "Teleporter Nexus");
 		translationBuilder.add(FunnyRegistry.COLOURED_CHEST, "Colored Chest");
 		translationBuilder.add(FunnyRegistry.TELEPORTER_WAND, "Teleporter Wand");
 	}

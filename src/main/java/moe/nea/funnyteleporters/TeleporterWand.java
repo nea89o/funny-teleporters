@@ -22,17 +22,25 @@ public class TeleporterWand extends Item implements PolymerItem {
 
 	@Override
 	public ActionResult useOnBlock(ItemUsageContext context) {
-		if (context.getWorld().getBlockState(context.getBlockPos()).getBlock() == FunnyRegistry.TELEPORTER) {
+		var destination = context.getStack().get(FunnyRegistry.TELEPORTER_DESTINATION);
+		var block = context.getWorld().getBlockState(context.getBlockPos()).getBlock();
+		if (block == FunnyRegistry.TELEPORTER_NEXUS && destination != null) {
+			var nexus = FunnyRegistry.TELEPORTER_NEXUS.getBE(context.getWorld(), context.getBlockPos());
+			if (context.getPlayer() != null)
+				context.getPlayer().sendMessage(Text.literal("Saved destination from wand into nexus."));
+			nexus.addDestination(destination);
+		}
+		if (block == FunnyRegistry.TELEPORTER) {
 			if (context.getPlayer() != null && context.getPlayer().isSneaking()) {
 				context.getStack().set(FunnyRegistry.TELEPORTER_DESTINATION, new TeleporterDestination(context.getWorld().getRegistryKey(), context.getBlockPos()));
 				context.getPlayer().sendMessage(Text.literal("Saved teleport destination to wand."));
 			} else {
 				var be = FunnyRegistry.TELEPORTER.getBE(context.getWorld(), context.getBlockPos());
 				// TODO: check for empty destination
-				be.destination = context.getStack().get(FunnyRegistry.TELEPORTER_DESTINATION);
+				be.destination = destination;
 				be.markDirty();
 				if (context.getPlayer() != null) {
-					context.getPlayer().sendMessage(Text.literal("Set new target destination to wand."));
+					context.getPlayer().sendMessage(Text.literal("Set new target destination from wand."));
 				}
 			}
 			return ActionResult.SUCCESS_NO_ITEM_USED;

@@ -73,15 +73,6 @@ public class TeleporterBlockEntity extends BlockEntity {
 
 	void performTeleport(Entity subject) {
 		if (destination == null) return;
-		var sourceWorld = subject.getWorld();
-		var destinationWorld = destination.getDestinationWorld((ServerWorld) sourceWorld);
-		if (destinationWorld == null) return;
-		var destinationBE = destinationWorld.getBlockEntity(destination.blockPos());
-		if (!(destinationBE instanceof TeleporterBlockEntity be)) {
-			return;
-		}
-		be.incomingEntities.add(subject);
-		var destPos = destination.blockPos().up().toBottomCenterPos();
-		subject.teleport(destinationWorld, destPos.x, destPos.y, destPos.z, Set.of(), subject.getYaw(), subject.getPitch());
+		destination.teleport(subject);
 	}
 }

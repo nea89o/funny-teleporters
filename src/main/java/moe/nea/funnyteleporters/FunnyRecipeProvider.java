@@ -51,5 +51,15 @@ public class FunnyRecipeProvider extends FabricRecipeProvider {
 		                       .input('s', Items.STICK)
 		                       .criterion(hasItem(Items.ENDER_PEARL), conditionsFromItem(Items.ENDER_PEARL))
 		                       .offerTo(recipeExporter);
+
+		ShapedRecipeJsonBuilder.create(RecipeCategory.TRANSPORTATION, FunnyRegistry.TELEPORTER_NEXUS)
+		                       .pattern(" e ")
+		                       .pattern("ptp")
+		                       .pattern("ttt")
+		                       .input('e', Items.ENCHANTING_TABLE)
+		                       .input('p', FunnyRegistry.ENDER_PEARL_BLOCK)
+		                       .input('t', FunnyRegistry.TELEPORTER)
+		                       .criterion(hasItem(FunnyRegistry.TELEPORTER), conditionsFromItem(FunnyRegistry.TELEPORTER))
+		                       .offerTo(recipeExporter);
 	}
 }

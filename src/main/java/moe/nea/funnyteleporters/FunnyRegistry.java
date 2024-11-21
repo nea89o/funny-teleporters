@@ -29,12 +29,15 @@ public class FunnyRegistry {
 	                                                                                                                 .pistonBehavior(PistonBehavior.BLOCK)
 	                                                                                                                 .strength(50F, 1200F)), Items.SEA_LANTERN);
 
+	public static TeleporterNexus TELEPORTER_NEXUS = registerBlock("teleporter_nexus", new TeleporterNexus(AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.BLOCK).strength(100F, 1200F)), Items.ENCHANTING_TABLE);
+
 	public static ComponentType<TeleporterDestination> TELEPORTER_DESTINATION = registerComponentType("teleporter_destination", TeleporterDestination.CODEC);
 
 
 	public static BlockEntityType<ColouredChestBlockEntity> COLOURED_CHEST_ENTITY = registerBlockEntity("coloured_chest", BlockEntityType.Builder.create(ColouredChestBlockEntity::new, COLOURED_CHEST));
 	public static BlockEntityType<TeleporterBlockEntity> TELEPORTER_ENTITY = registerBlockEntity("teleporter", BlockEntityType.Builder.create(TeleporterBlockEntity::new, TELEPORTER));
 	public static TeleporterWand TELEPORTER_WAND = registerItem("teleporter_wand", new TeleporterWand(new Item.Settings().maxCount(1)));
+	public static BlockEntityType<TeleporterNexusBlockEntity> TELEPORTER_NEXUS_ENTITY = registerBlockEntity("teleporter_nexus", BlockEntityType.Builder.create(TeleporterNexusBlockEntity::new, TELEPORTER_NEXUS));
 
 	private static <T> ComponentType<T> registerComponentType(String name, Codec<T> codec) {
 		var comp = Registry.register(Registries.DATA_COMPONENT_TYPE, FunnyTeleporters.id(name), ComponentType.<T>builder().codec(codec).build());
