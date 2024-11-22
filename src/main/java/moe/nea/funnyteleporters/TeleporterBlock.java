@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.RespawnAnchorBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
@@ -22,7 +23,7 @@ public class TeleporterBlock extends Block implements PolymerBlock, BlockEntityP
 
 	@Override
 	public BlockState getPolymerBlockState(BlockState blockState) {
-		return Blocks.SEA_LANTERN.getDefaultState();
+		return Blocks.RESPAWN_ANCHOR.getDefaultState().with(RespawnAnchorBlock.CHARGES, RespawnAnchorBlock.MAX_CHARGES);
 	}
 
 	public TeleporterBlockEntity getBE(World world, BlockPos pos) {
