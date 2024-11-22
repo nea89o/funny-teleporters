@@ -6,6 +6,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
@@ -14,6 +15,7 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.Optional;
 import java.util.TreeMap;
 
 public class TeleporterNexusBlockEntity extends BlockEntity {
@@ -23,20 +25,40 @@ public class TeleporterNexusBlockEntity extends BlockEntity {
 		super(type, pos, state);
 	}
 
-	public TreeMap<TeleporterDestination, RegistryEntry<Item>> destinations = new TreeMap<>();
-	private static final Codec<TreeMap<TeleporterDestination, RegistryEntry<Item>>> DESTINATION_CODEC =
+	public Optional<String> getName(TeleporterDestination dest) {
+		var label = destinations.get(dest);
+		return label != null ? (label.label) : Optional.empty();
+	}
+
+	public ItemConvertible getIcon(TeleporterDestination dest) {
+		var label = destinations.get(dest);
+		return (label != null ? label.item : getDefaultItem()).value();
+	}
+
+	public record Label(
+		RegistryEntry<Item> item,
+		Optional<String> label
+	) {
+	}
+
+	public TreeMap<TeleporterDestination, Label> destinations = new TreeMap<>();
+	private static final Codec<TreeMap<TeleporterDestination, Label>> DESTINATION_CODEC =
 		TeleporterDestination.Labeled.CODEC
 			.listOf()
 			.xmap(
 				pairs -> {
-					var hash = new TreeMap<TeleporterDestination, RegistryEntry<Item>>();
+					var hash = new TreeMap<TeleporterDestination, Label>();
 					for (TeleporterDestination.Labeled pair : pairs) {
-						hash.put(pair.destination(), pair.item());
+						hash.put(pair.destination(), new Label(pair.item(), pair.name()));
 					}
 					return hash;
 				},
-				map -> map.entrySet().stream().map(it -> new TeleporterDestination.Labeled(it.getValue(), it.getKey())).toList()
+				map -> map.entrySet().stream().map(it -> new TeleporterDestination.Labeled(it.getValue().item(), it.getKey(), it.getValue().label())).toList()
 			);
+
+	static RegistryEntry<Item> getDefaultItem() {
+		return Registries.ITEM.getEntry(Items.ENDER_PEARL);
+	}
 
 	@Override
 	protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
@@ -52,7 +74,7 @@ public class TeleporterNexusBlockEntity extends BlockEntity {
 	}
 
 	public void addDestination(TeleporterDestination destination) {
-		destinations.putIfAbsent(destination, Registries.ITEM.getEntry(Items.ENDER_PEARL));
+		destinations.putIfAbsent(destination, new Label(getDefaultItem(), Optional.empty()));
 		markDirty();
 	}
 
@@ -62,7 +84,13 @@ public class TeleporterNexusBlockEntity extends BlockEntity {
 	}
 
 	public void setIcon(TeleporterDestination dest, Item item) {
-		destinations.put(dest, Registries.ITEM.getEntry(item));
+		var entry = Registries.ITEM.getEntry(item);
+		destinations.compute(dest, (key, old) -> old == null ? new Label(entry, Optional.empty()) : new Label(entry, old.label()));
+		markDirty();
+	}
+
+	public void setName(TeleporterDestination dest, Optional<String> string) {
+		destinations.compute(dest, (key, old) -> old == null ? new Label(getDefaultItem(), string) : new Label(old.item(), string));
 		markDirty();
 	}
 }

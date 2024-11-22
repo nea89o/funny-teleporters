@@ -40,10 +40,10 @@ public class TeleporterNexusScreen extends SimpleGui {
 		}
 	}
 
-	private GuiElementBuilderInterface<?> getHandlerForEntry(Map.Entry<TeleporterDestination, RegistryEntry<Item>> entry) {
+	private GuiElementBuilderInterface<?> getHandlerForEntry(Map.Entry<TeleporterDestination, TeleporterNexusBlockEntity.Label> entry) {
 		var dest = entry.getKey();
-		return GuiElementBuilder.from(new ItemStack(entry.getValue()))
-		                        .setName(Text.literal("Teleport to"))
+		return GuiElementBuilder.from(new ItemStack(entry.getValue().item()))
+		                        .setName(Text.literal("Teleport to" + entry.getValue().label().map(it -> " " + it).orElse("")))
 		                        .hideDefaultTooltip()
 		                        .addLoreLine(Text.literal(String.format("x: %d, y: %d, z: %d", dest.blockPos().getX(), dest.blockPos().getY(), dest.blockPos().getZ()))
 		                                         .setStyle(Style.EMPTY.withItalic(false).withColor(Formatting.AQUA)))

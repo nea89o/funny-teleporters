@@ -3,7 +3,9 @@ package moe.nea.funnyteleporters;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Unit;
 
 import java.util.Iterator;
@@ -20,5 +22,13 @@ public class Utils {
 		for (; skipCount > 0 && it.hasNext(); skipCount--) {
 			it.next();
 		}
+	}
+
+	public static Style emptyLoreStyle() {
+		return Style.EMPTY.withItalic(false);
+	}
+
+	public static Style colouredLoreStyle(Formatting formatting) {
+		return emptyLoreStyle().withColor(formatting);
 	}
 }
