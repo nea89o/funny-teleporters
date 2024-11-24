@@ -41,7 +41,7 @@ public record TeleporterDestination(
 		if (!(destinationBE instanceof TeleporterBlockEntity be)) {
 			return;
 		}
-		be.incomingEntities.add(subject);
+		be.addIncoming(subject);
 		var destPos = blockPos().up().toBottomCenterPos();
 		subject.teleport(destinationWorld, destPos.x, destPos.y, destPos.z, Set.of(), subject.getYaw(), subject.getPitch());
 	}

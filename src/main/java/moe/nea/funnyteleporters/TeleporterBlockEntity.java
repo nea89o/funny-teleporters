@@ -1,22 +1,20 @@
 package moe.nea.funnyteleporters;
 
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.DataResult;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.TypeFilter;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,7 +35,8 @@ public class TeleporterBlockEntity extends BlockEntity {
 		var up = blockPos.up();
 		var newEntities = new HashSet<>(world.getEntitiesByType(TypeFilter.instanceOf(Entity.class), Box.enclosing(up, up), entity -> true));
 		for (Entity entity : newEntities) {
-			if (incomingEntities.remove(entity)) {
+			var ref = new Ref(entity);
+			if (incomingEntities.remove(ref)) {
 				trackedEntities.remove(entity);
 				continue;
 			}
@@ -46,6 +45,11 @@ public class TeleporterBlockEntity extends BlockEntity {
 			}
 		}
 		trackedEntities = newEntities;
+		while (true) {
+			var ref = (Ref) refQueue.poll();
+			if (ref == null) break;
+			incomingEntities.remove(ref);
+		}
 	}
 
 	@Override
@@ -67,12 +71,39 @@ public class TeleporterBlockEntity extends BlockEntity {
 		}
 	}
 
+	class Ref extends WeakReference<Entity> {
+		public Ref(Entity referent) {
+			super(referent, refQueue);
+			hash = System.identityHashCode(referent);
+		}
+
+		int hash;
+
+		@Override
+		public int hashCode() {
+			return hash;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof Ref ref) {
+				return ref.hash == this.hash && ref.get() == this.get();
+			}
+			return false;
+		}
+	}
+
+	private final ReferenceQueue<Entity> refQueue = new ReferenceQueue<>();
 	Set<Entity> trackedEntities = new HashSet<>();
-	Set<Entity> incomingEntities = new HashSet<>();
+	Set<Ref> incomingEntities = new HashSet<>();
 	@Nullable TeleporterDestination destination;
 
 	void performTeleport(Entity subject) {
 		if (destination == null) return;
 		destination.teleport(subject);
+	}
+
+	public void addIncoming(Entity subject) {
+		incomingEntities.add(new Ref(subject));
 	}
 }
