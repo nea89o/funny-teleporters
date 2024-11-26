@@ -8,15 +8,16 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -31,6 +32,11 @@ public record TeleporterDestination(
 	@Override
 	public int compareTo(@NotNull TeleporterDestination o) {
 		return COMPARATOR.compare(this, o);
+	}
+
+	public List<Text> formatName(String prefix) { // TODO: use this more often
+		return List.of(Text.literal("%s x: %d, y: %d, z: %d".formatted(prefix, blockPos().getX(), blockPos().getY(), blockPos().getZ())),
+		               Text.literal("In Dimension: %s".formatted(target().getValue())));
 	}
 
 	public void teleport(Entity subject) {
